@@ -432,31 +432,97 @@
       display: flex;
     }
 
-    .act-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 6px;
+    /* ── RICH ACTIVITY BLOCKS ─────────────────────────────────────────────── */
+    #activityWrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 7px;
+    }
+
+    .rich-act {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.055);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.02);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      animation: act-in 0.35s ease;
+    }
+
+    @keyframes act-in {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .rich-act.show { display: flex; }
+
+    .rich-act-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Image area: large image with optional small badge overlay */
+    .rich-act-imgs {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    .rich-act-large {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
       background: #1a1a1a;
       overflow: hidden;
-      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 22px;
     }
 
-    .act-icon img {
+    .rich-act-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Small icon badge in bottom-right corner */
+    .rich-act-small {
+      position: absolute;
+      bottom: -3px;
+      right: -3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: 2px solid #0d0d0d;
+      overflow: hidden;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rich-act-small.show { display: flex; }
+
+    .rich-act-small img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .act-info {
+    .rich-act-info {
       flex: 1;
       min-width: 0;
     }
 
-    .act-type {
+    .rich-act-label {
       font-family: 'Geist Mono', monospace;
       font-size: 9px;
       letter-spacing: 0.12em;
@@ -465,22 +531,52 @@
       margin-bottom: 3px;
     }
 
-    .act-name {
+    .rich-act-name {
       font-size: 12.5px;
-      color: rgba(255, 255, 255, 0.52);
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.65);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-bottom: 2px;
     }
 
-    .act-detail {
+    .rich-act-detail,
+    .rich-act-state {
       font-family: 'Geist Mono', monospace;
       font-size: 10px;
-      color: rgba(255, 255, 255, 0.22);
+      color: rgba(255, 255, 255, 0.28);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      line-height: 1.5;
+    }
+
+    /* Elapsed time */
+    .rich-act-elapsed {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9.5px;
+      color: rgba(255, 255, 255, 0.18);
       margin-top: 2px;
+    }
+
+    /* Optional progress bar for timed activities */
+    .rich-act-bar-wrap {
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 2px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .rich-act-bar-wrap.show { display: block; }
+
+    .rich-act-bar-fill {
+      height: 100%;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 2px;
+      transition: width 1s linear;
     }
 
     /* EQ / Spotify */
@@ -675,10 +771,11 @@
     /* Lyrics scroll area */
     .lp-lyrics {
       height: 110px;
-      overflow-y: auto;
+      overflow-y: scroll;
       padding: 8px 14px;
-      scroll-behavior: smooth;
+      overscroll-behavior: contain;
       mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
     }
 
     .lp-lyrics::-webkit-scrollbar {
@@ -689,34 +786,24 @@
       font-family: 'Geist', sans-serif;
       font-size: 12px;
       font-weight: 300;
-      color: rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.85);
       line-height: 1.7;
       text-align: center;
       cursor: pointer;
-      transition: color 0.4s ease;
       padding: 1px 0;
+      opacity: 0.15;
+      transition: opacity 0.35s ease, text-shadow 0.35s ease;
+      will-change: opacity;
     }
 
     .lyric-line.active {
-      color: rgba(255, 255, 255, 0.92);
-      font-weight: 400;
+      opacity: 1;
+      text-shadow: 0 0 22px rgba(255, 255, 255, 0.18);
     }
 
     .lyric-line.past {
-      color: rgba(255, 255, 255, 0.28);
-    }
-
-    /* Word-level highlight inside active line */
-    .lyric-line .word {
-      transition: color 0.15s;
-    }
-
-    .lyric-line.active .word.lit {
-      color: #ffffff;
-    }
-
-    .lyric-line.active .word.dim {
-      color: rgba(255, 255, 255, 0.45);
+      opacity: 0.22;
+      transition: opacity 0.5s ease, text-shadow 0.5s ease;
     }
 
     /* Progress / duration */
@@ -1335,15 +1422,8 @@
         <div class="quote" id="quoteEl"><span class="cursor"></span></div>
       </div>
 
-      <!-- Game activity -->
-      <div class="presence-block" id="actBlock">
-        <div class="act-icon" id="actIcon">🎮</div>
-        <div class="act-info">
-          <div class="act-type" id="actType">playing</div>
-          <div class="act-name" id="actName"></div>
-          <div class="act-detail" id="actDetail"></div>
-        </div>
-      </div>
+      <!-- Game / Rich Presence Activity -->
+      <div id="activityWrap"></div>
 
       <!-- Spotify -->
       <div class="presence-block" id="spotBlock">
@@ -1839,15 +1919,10 @@
       const lyrics = SONGS[idx].lyrics;
       const container = document.getElementById('lpLyrics');
       container.innerHTML = lyrics.map((l, i) =>
-        `<div class="lyric-line" id="ll${i}" onclick="seekTo(${l.t})">${wrapWords(l.text)}</div>`
+        `<div class="lyric-line" id="ll${i}" onclick="seekTo(${l.t})">${l.text}</div>`
       ).join('');
       container.scrollTop = 0;
-      // Cache line elements for fast lookup
       lineEls = lyrics.map((_, i) => document.getElementById('ll' + i));
-    }
-
-    function wrapWords(text) {
-      return text.split(' ').map(w => `<span class="word dim">${w}</span>`).join(' ');
     }
 
     function switchSong(idx) {
@@ -1917,7 +1992,6 @@
     // ── LYRIC SYNC ────────────────────────────────────────────────────────────
     let lastActiveLine = -1;
     let lineEls = [];
-    let wordTimers = [];
 
     // Use requestAnimationFrame for zero-lag lyric sync instead of timeupdate
     function syncLoop() {
@@ -1932,20 +2006,17 @@
       document.getElementById('lpFill').style.width = pct + '%';
       document.getElementById('lpCurrent').textContent = fmtTime(t);
 
-      // Binary-search for active lyric line
+      // Binary-search for active lyric line — +0.08s lookahead compensates for visual lag
       const lyrics = SONGS[currentSong].lyrics;
+      const tLook = t + 0.08;
       let lo = 0, hi = lyrics.length - 1, active = -1;
       while (lo <= hi) {
         const mid = (lo + hi) >> 1;
-        if (lyrics[mid].t <= t) { active = mid; lo = mid + 1; }
+        if (lyrics[mid].t <= tLook) { active = mid; lo = mid + 1; }
         else hi = mid - 1;
       }
 
       if (active !== lastActiveLine) {
-        // Clear old word timers
-        wordTimers.forEach(clearTimeout);
-        wordTimers = [];
-
         if (lastActiveLine >= 0 && lineEls[lastActiveLine]) {
           lineEls[lastActiveLine].classList.remove('active');
           lineEls[lastActiveLine].classList.add('past');
@@ -1958,54 +2029,15 @@
           if (i < active) { el.classList.add('past'); el.classList.remove('active'); }
           else if (i === active) {
             el.classList.add('active'); el.classList.remove('past');
-            // Scroll only within the lyrics container — never the whole page
             const container = document.getElementById('lpLyrics');
-            const target = el.offsetTop - container.offsetTop - (container.clientHeight / 2) + (el.clientHeight / 2);
+            const elTop = el.offsetTop - container.offsetTop;
+            const target = elTop - (container.clientHeight / 2) + (el.clientHeight / 2);
             container.scrollTo({ top: target, behavior: 'smooth' });
-            animateWords(el, lyrics, active, t);
           } else {
             el.classList.remove('active', 'past');
           }
         });
       }
-    }
-
-    function animateWords(el, lyrics, lineIdx, startT) {
-      const words = el.querySelectorAll('.word');
-      if (!words.length) return;
-
-      // Single word — just light it immediately
-      if (words.length <= 1) {
-        words.forEach(w => { w.classList.remove('dim'); w.classList.add('lit'); });
-        return;
-      }
-
-      const lineStart = lyrics[lineIdx].t;
-      const lineEnd   = lyrics[lineIdx + 1] ? lyrics[lineIdx + 1].t : (audio.duration || lineStart + 4);
-      const lineDur   = Math.max(0.3, lineEnd - lineStart);
-      const perWord   = lineDur / words.length; // seconds per word
-
-      // How far into this line are we RIGHT NOW (accounts for any detection lag)
-      const elapsed = Math.max(0, audio.currentTime - lineStart);
-
-      words.forEach((w, wi) => {
-        const wordStartSec = wi * perWord;          // when this word should light up (relative to line start)
-        const delayMs = (wordStartSec - elapsed) * 1000; // how many ms from now
-
-        if (delayMs <= 0) {
-          // This word's moment has already passed — light it instantly
-          w.classList.remove('dim');
-          w.classList.add('lit');
-        } else {
-          const id = setTimeout(() => {
-            if (el.classList.contains('active')) {
-              w.classList.remove('dim');
-              w.classList.add('lit');
-            }
-          }, delayMs);
-          wordTimers.push(id);
-        }
-      });
     }
 
     audio.addEventListener('loadedmetadata', () => {
@@ -2103,6 +2135,140 @@
         else if (j?.banner_color) applyBannerColor(j.banner_color);
       }).catch(() => {});
 
+    // ── RICH ACTIVITY RENDERER ────────────────────────────────────────────────
+    const TYPE_LABEL = { 0: 'playing', 1: 'streaming', 2: 'listening to', 3: 'watching', 5: 'competing in' };
+    let activityTimers = []; // setInterval handles for elapsed clocks
+
+    function resolveAssetUrl(image, appId) {
+      if (!image) return null;
+      // External image (Spotify, Steam, etc.) — strip the "mp:external/" prefix
+      if (image.startsWith('mp:external/')) {
+        const encoded = image.slice('mp:external/'.length);
+        // The rest is a URL-encoded HTTPS URL embedded in the path
+        const parts = encoded.split('/https/');
+        if (parts.length > 1) return 'https://' + parts[1];
+        return null;
+      }
+      // Spotify asset — shouldn't normally appear here but handle it
+      if (image.startsWith('spotify:')) return null;
+      // Standard Discord CDN asset
+      if (appId) return `https://cdn.discordapp.com/app-assets/${appId}/${image}.png`;
+      return null;
+    }
+
+    function fmtElapsed(startMs) {
+      const s = Math.floor((Date.now() - startMs) / 1000);
+      const m = Math.floor(s / 60);
+      const h = Math.floor(m / 60);
+      if (h > 0) return `${h}h ${m % 60}m elapsed`;
+      if (m > 0) return `${m}m ${s % 60}s elapsed`;
+      return `${s}s elapsed`;
+    }
+
+    function fmtDuration(ms) {
+      const s = Math.floor(ms / 1000);
+      const m = Math.floor(s / 60);
+      const h = Math.floor(m / 60);
+      if (h > 0) return `${h}:${String(m % 60).padStart(2,'0')}:${String(s % 60).padStart(2,'0')}`;
+      return `${m}:${String(s % 60).padStart(2,'0')}`;
+    }
+
+    function buildActivityBlock(act, idx) {
+      const wrap = document.createElement('div');
+      wrap.className = 'rich-act show';
+      wrap.id = `richAct_${idx}`;
+
+      const largeUrl  = resolveAssetUrl(act.assets?.large_image, act.application_id);
+      const smallUrl  = resolveAssetUrl(act.assets?.small_image, act.application_id);
+      const largeTip  = act.assets?.large_text  || act.name || '';
+      const smallTip  = act.assets?.small_text  || '';
+      const label     = TYPE_LABEL[act.type] || 'doing';
+      const hasStart  = act.timestamps?.start != null;
+      const hasEnd    = act.timestamps?.end   != null;
+      const startMs   = act.timestamps?.start;
+      const endMs     = act.timestamps?.end;
+
+      wrap.innerHTML = `
+        <div class="rich-act-top">
+          <div class="rich-act-imgs" title="${largeTip}">
+            <div class="rich-act-large" id="richLarge_${idx}">${largeUrl ? '' : '🎮'}</div>
+            <div class="rich-act-small${smallUrl ? ' show' : ''}" id="richSmall_${idx}" title="${smallTip}"></div>
+          </div>
+          <div class="rich-act-info">
+            <div class="rich-act-label">${label}</div>
+            <div class="rich-act-name">${act.name || ''}</div>
+            ${act.details ? `<div class="rich-act-detail" id="richDetail_${idx}">${act.details}</div>` : ''}
+            ${act.state   ? `<div class="rich-act-state"  id="richState_${idx}">${act.state}</div>`   : ''}
+            ${hasStart    ? `<div class="rich-act-elapsed" id="richElapsed_${idx}"></div>` : ''}
+          </div>
+        </div>
+        ${(hasStart && hasEnd) ? `
+        <div class="rich-act-bar-wrap show">
+          <div class="rich-act-bar-fill" id="richBar_${idx}"></div>
+        </div>` : ''}
+      `;
+
+      // Load images after building DOM so fallback emoji is visible immediately
+      if (largeUrl) {
+        const img = new Image();
+        img.onload = () => {
+          const el = wrap.querySelector(`#richLarge_${idx}`);
+          if (el) { el.innerHTML = ''; el.appendChild(img); }
+        };
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+        img.alt = largeTip;
+        img.src = largeUrl;
+      }
+      if (smallUrl) {
+        const sImg = new Image();
+        sImg.onload = () => {
+          const el = wrap.querySelector(`#richSmall_${idx}`);
+          if (el) { el.classList.add('show'); el.innerHTML = ''; el.appendChild(sImg); }
+        };
+        sImg.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+        sImg.alt = smallTip;
+        sImg.src = smallUrl;
+      }
+
+      // Elapsed timer — runs every second
+      if (hasStart) {
+        const elapsedEl = wrap.querySelector(`#richElapsed_${idx}`);
+        if (elapsedEl) {
+          elapsedEl.textContent = fmtElapsed(startMs);
+          const tid = setInterval(() => {
+            if (!document.body.contains(elapsedEl)) { clearInterval(tid); return; }
+            elapsedEl.textContent = fmtElapsed(startMs);
+            // Progress bar if we also have an end time
+            if (hasEnd) {
+              const total = endMs - startMs;
+              const gone  = Date.now() - startMs;
+              const pct   = Math.min(100, Math.max(0, (gone / total) * 100));
+              const barEl = wrap.querySelector(`#richBar_${idx}`);
+              if (barEl) barEl.style.width = pct + '%';
+            }
+          }, 1000);
+          activityTimers.push(tid);
+        }
+      }
+
+      return wrap;
+    }
+
+    function renderActivities(activities) {
+      // Clear old timers and blocks
+      activityTimers.forEach(clearInterval);
+      activityTimers = [];
+      const wrap = document.getElementById('activityWrap');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+
+      // Filter: exclude custom status (type 4) and Spotify (handled separately)
+      const acts = (activities || []).filter(a => a.type !== 4 && a.name !== 'Spotify');
+      acts.slice(0, 2).forEach((act, i) => {
+        wrap.appendChild(buildActivityBlock(act, i));
+      });
+    }
+
     function applyData(d) {
       const u = d.discord_user;
       if (u?.avatar) {
@@ -2111,31 +2277,34 @@
       }
       // banner_color fallback from WS if API fetch didn't get a banner image
       if (u?.banner_color) applyBannerColor(u.banner_color);
+
+      // Status dot
       const s = d.discord_status || 'offline';
       document.getElementById('statusDot').className = 'status-dot ' + s;
+
+      // Custom status (type 4)
       const custom = (d.activities || []).find(a => a.type === 4);
       const statusEl = document.getElementById('statusText');
       if (custom) {
         const parts = [custom.emoji?.name, custom.state].filter(Boolean);
-        if (parts.length) { statusEl.textContent = parts.join(' '); statusEl.style.display = ''; return; }
+        statusEl.textContent = parts.length ? parts.join(' ') : '';
+        statusEl.style.display = parts.length ? '' : 'none';
+      } else {
+        statusEl.style.display = 'none';
       }
-      statusEl.style.display = 'none';
+
+      // Spotify block
+      const spotBlock = document.getElementById('spotBlock');
       if (d.spotify) {
-        document.getElementById('spotBlock').classList.add('show');
-        document.getElementById('trackName').textContent = d.spotify.song || '';
+        spotBlock.classList.add('show');
+        document.getElementById('trackName').textContent   = d.spotify.song   || '';
         document.getElementById('trackArtist').textContent = d.spotify.artist || '';
+      } else {
+        spotBlock.classList.remove('show');
       }
-      const act = (d.activities || []).find(a => a.type !== 4 && a.name !== 'Spotify');
-      if (act) {
-        document.getElementById('actBlock').classList.add('show');
-        const typeMap = { 0: 'playing', 1: 'streaming', 3: 'watching', 5: 'competing in' };
-        document.getElementById('actType').textContent = typeMap[act.type] || 'doing';
-        document.getElementById('actName').textContent = act.name || '';
-        document.getElementById('actDetail').textContent = act.details || act.state || '';
-        if (act.assets?.large_image && act.application_id) {
-          document.getElementById('actIcon').innerHTML = `<img src="https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.png" alt="">`;
-        }
-      }
+
+      // Rich game/app activities
+      renderActivities(d.activities);
     }
 
     function connectLanyard() {
